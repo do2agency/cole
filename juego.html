@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261012b">
+<link rel="stylesheet" href="estilo.css?v=20261012c">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -121,9 +121,9 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261012b"></script>
-<script src="jugadores.js?v=20261012b"></script>
-<script src="coches.js?v=20261012b"></script>
+<script src="temas.js?v=20261012c"></script>
+<script src="jugadores.js?v=20261012c"></script>
+<script src="coches.js?v=20261012c"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -173,7 +173,8 @@ function preguntas(){
   return TEMA.items.map(([q, a]) => ({ when: null, label: SEC.nombre, prompt: q, pre: "", answer: a, pool: all }));
 }
 
-// Casillas de tablas (tema "Mezcla"): se puede marcar cualquier combinación, siempre al menos una
+// Casillas de tablas (tema "Mezcla"): se puede marcar cualquier combinación, siempre al menos una.
+// Si están todas marcadas, el primer toque elige solo esa tabla; los siguientes toques añaden o quitan.
 function tablasUI(){
   const todas = sel.size === TEMA.tablas.length;
   $("tiempos").innerHTML = `<h2 class="lbl" id="t-h">¿Qué tablas?</h2><div class="chips" role="group" aria-labelledby="t-h">
@@ -181,7 +182,8 @@ function tablasUI(){
     <button class="chip" id="todas" aria-pressed="${todas}">Todas</button></div>`;
   document.querySelectorAll(".tick input").forEach(c => c.onchange = () => {
     const n = +c.dataset.n;
-    if (c.checked) sel.add(n); else if (sel.size > 1) sel.delete(n); else { c.checked = true; return; }
+    if (todas) sel = new Set([n]);
+    else if (c.checked) sel.add(n); else if (sel.size > 1) sel.delete(n); else { c.checked = true; return; }
     write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start();
   });
   $("todas").onclick = () => { sel = new Set(TEMA.tablas); write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start(); };
