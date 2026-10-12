@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261012c">
+<link rel="stylesheet" href="estilo.css?v=20261012d">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -121,9 +121,9 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261012c"></script>
-<script src="jugadores.js?v=20261012c"></script>
-<script src="coches.js?v=20261012c"></script>
+<script src="temas.js?v=20261012d"></script>
+<script src="jugadores.js?v=20261012d"></script>
+<script src="coches.js?v=20261012d"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -142,6 +142,9 @@ const PREMIOS = MAT.premio === "coches" && HAY_COCHES ? COCHES
   : MAT.premio === "mezcla" && HAY_COCHES ? (() => { const j = shuffle([...JUGADORES]), c = shuffle([...COCHES]);
       return Array.from({ length: Math.max(j.length, c.length) * 2 }, (_, i) => (i % 2 ? c : j)[(i >> 1) % (i % 2 ? c : j).length]); })()
   : JUGADORES;
+// Cada 4 goles sale Lamine Yamal (en el resto de goles no se repite)
+const ESTRELLA = JUGADORES.find(p => p.n === "Lamine Yamal");
+const ROTA = ESTRELLA && PREMIOS.length > 1 ? PREMIOS.filter(p => p !== ESTRELLA) : PREMIOS;
 document.title = "Cole · " + TEMA.titulo;
 $("crumb").textContent = `${MAT.nombre} · ${TEMA.periodo} · ${SEC.nombre}`;
 $("title").textContent = TEMA.titulo;
@@ -207,7 +210,7 @@ function guardar(fin){
 
 function start(){
   queue = shuffle(preguntas()); total = queue.length; goals = 0; fails = 0; scorers = [];
-  score(); pIdx = Math.random() * PREMIOS.length | 0; next();
+  score(); pIdx = Math.random() * ROTA.length | 0; next();
 }
 function options(c){
   return shuffle([c.answer, ...shuffle(c.pool.filter(x => x !== c.answer)).slice(0, 3)]);
@@ -249,7 +252,7 @@ function answer(raw, btn){
   guardar(false);
   if (ok){
     goals++; score();
-    const pl = PREMIOS[pIdx++ % PREMIOS.length]; scorers.push(pl);
+    const pl = ESTRELLA && goals % 4 === 0 ? ESTRELLA : ROTA[pIdx++ % ROTA.length]; scorers.push(pl);
     $("goal").classList.toggle("coches", pl.img.includes("/c/")); $("gimg").src = pl.img; $("gimg").alt = pl.n; $("gname").textContent = pl.n;
     $("gans").textContent = `${cur.when ? cur.when + " · " : ""}${full}`;
     $("goal").hidden = false; $("gnext").focus();
