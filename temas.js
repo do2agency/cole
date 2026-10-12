@@ -6,7 +6,7 @@ const MATERIAS = [
   { id: "en", nombre: "English",            periodos: ["1st Term"] },
   { id: "va", nombre: "Llengua Valenciana", periodos: ["1a Avaluació"] },
   { id: "es", nombre: "Lengua",             periodos: ["1.er Trimestre"] },
-  { id: "ma", nombre: "Matemáticas",        periodos: ["1.er Trimestre"], secciones: ["calc"], premio: "coches" },
+  { id: "ma", nombre: "Matemáticas",        periodos: ["1.er Trimestre"], secciones: ["calc"], premio: "mezcla" },
 ];
 
 // Secciones por defecto: vocab + gram. Una materia puede elegir otras con `secciones`.
@@ -21,7 +21,7 @@ const SECCIONES = [
 // tipo "mult": tablas de multiplicar (tablas: [2, 3…], por: multiplicadores; elegir: casillas para escoger las tablas)
 const POR = [2, 3, 4, 5, 6, 7, 8, 9];
 const TEMAS = [
-  ...[2, 3, 4, 5, 6].map(n => ({
+  ...[2, 3, 4, 5, 6, 7, 8, 9].map(n => ({
     id: "ma-tabla-" + n,
     materia: "ma", periodo: "1.er Trimestre", seccion: "calc",
     titulo: "La tabla del " + n,
@@ -31,7 +31,7 @@ const TEMAS = [
     id: "ma-tablas-mezcla",
     materia: "ma", periodo: "1.er Trimestre", seccion: "calc",
     titulo: "Mezcla: elige tus tablas",
-    tipo: "mult", tablas: [2, 3, 4, 5, 6], por: POR, elegir: true,
+    tipo: "mult", tablas: [2, 3, 4, 5, 6, 7, 8, 9], por: POR, elegir: true,
   },
   {
     id: "va-estar",

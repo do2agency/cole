@@ -136,16 +136,19 @@ const TEMA = TEMAS.find(t => t.id === new URLSearchParams(location.search).get("
 if (!TEMA) location.replace("index.html");
 const MAT = MATERIAS.find(m => m.id === TEMA.materia);
 const SEC = SECCIONES.find(s => s.id === TEMA.seccion);
-// Premio por cada acierto: jugadores de la selección o, en Matemáticas, coches deportivos
-const PREMIOS = MAT.premio === "coches" && typeof COCHES !== "undefined" && COCHES.length ? COCHES : JUGADORES;
-if (PREMIOS !== JUGADORES) $("goal").classList.add("coches");
+// Premio por cada acierto: jugadores de la selección, coches deportivos o una mezcla de los dos (alternando)
+const HAY_COCHES = typeof COCHES !== "undefined" && COCHES.length;
+const PREMIOS = MAT.premio === "coches" && HAY_COCHES ? COCHES
+  : MAT.premio === "mezcla" && HAY_COCHES ? (() => { const j = shuffle([...JUGADORES]), c = shuffle([...COCHES]);
+      return Array.from({ length: Math.max(j.length, c.length) * 2 }, (_, i) => (i % 2 ? c : j)[(i >> 1) % (i % 2 ? c : j).length]); })()
+  : JUGADORES;
 document.title = "Cole · " + TEMA.titulo;
 $("crumb").textContent = `${MAT.nombre} · ${TEMA.periodo} · ${SEC.nombre}`;
 $("title").textContent = TEMA.titulo;
 
 let ans = "pick", filtro = "all", queue = [], total = 0, goals = 0, fails = 0, cur = null, scorers = [], pIdx = 0;
 let sel = new Set(TEMA.tablas || []);
-if (TEMA.elegir){ const s = (read("cole:tablas:" + TEMA.id) || []).filter(n => sel.has(n)); if (s.length) sel = new Set(s); }
+if (TEMA.elegir){ const s = (read("cole:tablas9:" + TEMA.id) || []).filter(n => sel.has(n)); if (s.length) sel = new Set(s); }
 
 // Preguntas: {when, label, prompt, answer, pool(opciones parecidas)}
 function preguntas(){
@@ -179,9 +182,9 @@ function tablasUI(){
   document.querySelectorAll(".tick input").forEach(c => c.onchange = () => {
     const n = +c.dataset.n;
     if (c.checked) sel.add(n); else if (sel.size > 1) sel.delete(n); else { c.checked = true; return; }
-    write("cole:tablas:" + TEMA.id, [...sel]); tablasUI(); start();
+    write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start();
   });
-  $("todas").onclick = () => { sel = new Set(TEMA.tablas); write("cole:tablas:" + TEMA.id, [...sel]); tablasUI(); start(); };
+  $("todas").onclick = () => { sel = new Set(TEMA.tablas); write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start(); };
 }
 
 function tiemposUI(){
@@ -245,7 +248,7 @@ function answer(raw, btn){
   if (ok){
     goals++; score();
     const pl = PREMIOS[pIdx++ % PREMIOS.length]; scorers.push(pl);
-    $("gimg").src = pl.img; $("gimg").alt = pl.n; $("gname").textContent = pl.n;
+    $("goal").classList.toggle("coches", pl.img.includes("/c/")); $("gimg").src = pl.img; $("gimg").alt = pl.n; $("gname").textContent = pl.n;
     $("gans").textContent = `${cur.when ? cur.when + " · " : ""}${full}`;
     $("goal").hidden = false; $("gnext").focus();
   } else {
