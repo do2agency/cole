@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261018b">
+<link rel="stylesheet" href="estilo.css?v=20261018c">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -122,9 +122,9 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261018b"></script>
-<script src="jugadores.js?v=20261018b"></script>
-<script src="coches.js?v=20261018b"></script>
+<script src="temas.js?v=20261018c"></script>
+<script src="jugadores.js?v=20261018c"></script>
+<script src="coches.js?v=20261018c"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -248,7 +248,9 @@ function next(){
 function answer(raw, btn){
   let v = norm(raw);
   const pr = norm(cur.pre); if (pr && v.startsWith(pr + " ")) v = v.slice(pr.length + 1);
-  const right = cur.answer, full = cur.full || `${cur.pre ? cur.pre + " " : ""}${right}`, ok = v === norm(right);
+  // Respuestas con variantes ("undécimo / decimoprimero"): vale cualquiera; "15 cuadraditos" o "6 cm": vale también solo el número
+  const right = cur.answer, full = cur.full || `${cur.pre ? cur.pre + " " : ""}${right}`,
+    ok = [right, ...right.split(" / ")].some(x => v === norm(x)) || (/^\d+$/.test(v) && norm(right).split(" ")[0] === v);
   document.querySelectorAll("#card input,#card button").forEach(x => x.disabled = true);
   if (btn){ document.querySelectorAll(".opt").forEach(x => { if (x.dataset.v === right) x.classList.add("good") }); if (!ok) btn.classList.add("bad"); }
   else $("inp").classList.add(ok ? "good" : "bad");

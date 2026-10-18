@@ -6,7 +6,7 @@ const MATERIAS = [
   { id: "en", nombre: "English",            periodos: ["1st Term"] },
   { id: "va", nombre: "Llengua Valenciana", periodos: ["1a Avaluació"] },
   { id: "es", nombre: "Lengua",             periodos: ["1.er Trimestre"] },
-  { id: "ma", nombre: "Matemáticas",        periodos: ["1.er Trimestre"], secciones: ["calc"], premio: "mezcla" },
+  { id: "ma", nombre: "Matemáticas",        periodos: ["1.er Trimestre"], secciones: ["calc", "test"], premio: "mezcla" },
   { id: "ns", nombre: "Natural Science",    periodos: ["1st Term"], secciones: ["vocab", "test"], premio: "mezcla" },
 ];
 
@@ -23,6 +23,20 @@ const SECCIONES = [
 // tipo "mult": tablas de multiplicar (tablas: [2, 3…], por: multiplicadores; elegir: casillas para escoger las tablas)
 const POR = [2, 3, 4, 5, 6, 7, 8, 9];
 const TF = ["True", ["False"]], FT = ["False", ["True"]];
+
+// Matemáticas · cuaderno de clase: perímetro y área, circunferencia, números ordinales
+const RECT = [[5, 3], [4, 2], [6, 2], [7, 2], [3, 3], [6, 5], [8, 3], [9, 2]];
+const ORD = [
+  ["1.º", "primero"], ["2.º", "segundo"], ["3.º", "tercero"], ["4.º", "cuarto"], ["5.º", "quinto"],
+  ["6.º", "sexto"], ["7.º", "séptimo"], ["8.º", "octavo"], ["9.º", "noveno"], ["10.º", "décimo"],
+  ["11.º", "undécimo / decimoprimero"], ["12.º", "duodécimo / decimosegundo"],
+  ["13.º", "decimotercero / décimo tercero"], ["14.º", "decimocuarto / décimo cuarto"],
+  ["15.º", "decimoquinto / décimo quinto"], ["16.º", "decimosexto / décimo sexto"],
+  ["17.º", "decimoséptimo / décimo séptimo"], ["18.º", "decimoctavo / décimo octavo"],
+  ["19.º", "decimonoveno / décimo noveno"], ["20.º", "vigésimo"], ["30.º", "trigésimo"],
+  ["40.º", "cuadragésimo"], ["50.º", "quincuagésimo"], ["60.º", "sexagésimo"], ["70.º", "septuagésimo"],
+  ["80.º", "octogésimo"], ["90.º", "nonagésimo"], ["100.º", "centésimo"],
+];
 
 // Natural Science · Unit 1 (Cambridge Natural Science 3, pp. 8–17): preguntas de cada lección
 const NS1 = {
@@ -127,6 +141,63 @@ const NS1 = {
   ]],
 };
 const TEMAS = [
+  {
+    id: "ma-perimetro-area",
+    materia: "ma", periodo: "1.er Trimestre", seccion: "test",
+    titulo: "Perímetro y área",
+    tipo: "vocab",
+    items: [
+      ["El perímetro es…", "la suma de sus lados", ["el espacio de dentro", "el lado más largo", "la mitad del área"]],
+      ["El área es…", "el espacio de dentro", ["la suma de sus lados", "el lado más corto", "el borde de la figura"]],
+      ...RECT.flatMap(([l, a]) => {
+        const p = 2 * (l + a), ar = l * a;
+        // Opciones falsas: confundir perímetro y área, sumar solo dos lados…
+        const falsas = (ok, xs, u = "") => [...new Set(xs)].filter(x => x !== ok && x > 0).slice(0, 3).map(x => x + u);
+        return [
+          [`Un rectángulo de ${l} × ${a} cuadraditos. ¿Cuál es su perímetro?`, String(p), falsas(p, [ar, l + a, p + 2, p - 2])],
+          [`Un rectángulo de ${l} × ${a} cuadraditos. ¿Cuál es su área?`, ar + " cuadraditos", falsas(ar, [p, l + a, ar + a, ar + 1], " cuadraditos")],
+        ];
+      }),
+    ],
+  },
+  {
+    id: "ma-circunferencia",
+    materia: "ma", periodo: "1.er Trimestre", seccion: "test",
+    titulo: "Círculo y circunferencia",
+    tipo: "vocab", acentos: "áéíóú",
+    items: [
+      ["La línea que rodea la figura (el borde) es la…", "circunferencia", ["círculo", "radio", "diámetro"]],
+      ["Toda la superficie de dentro de la circunferencia es el…", "círculo", ["radio", "diámetro", "centro"]],
+      ["El punto que está justo en el medio se llama…", "centro", ["radio", "diámetro", "borde"]],
+      ["La línea que va del centro a la circunferencia es el…", "radio", ["diámetro", "centro", "círculo"]],
+      ["La línea que pasa por el centro y une dos puntos de la circunferencia es el…", "diámetro", ["radio", "centro", "perímetro"]],
+      ["El diámetro mide…", "el doble que el radio", ["la mitad que el radio", "igual que el radio", "el triple que el radio"]],
+      ["Si el radio mide 3 cm, el diámetro mide…", "6 cm", ["3 cm", "9 cm", "1 cm"]],
+      ["Si el radio mide 5 cm, el diámetro mide…", "10 cm", ["5 cm", "15 cm", "25 cm"]],
+      ["Si el diámetro mide 8 cm, el radio mide…", "4 cm", ["8 cm", "16 cm", "2 cm"]],
+      ["Si el diámetro mide 12 cm, el radio mide…", "6 cm", ["12 cm", "24 cm", "3 cm"]],
+    ],
+  },
+  {
+    id: "ma-ordinales",
+    materia: "ma", periodo: "1.er Trimestre", seccion: "test",
+    titulo: "Los números ordinales",
+    tipo: "vocab", acentos: "áéíóú",
+    items: [
+      ...ORD.map(([n, o]) => [n, o]),
+      ["Los números ordinales tienen género…", "masculino y femenino", ["solo masculino", "solo femenino"]],
+      ["1.ª (femenino)", "primera", ["primero", "primer", "primeras"]],
+      ["3.ª (femenino)", "tercera", ["tercero", "tercer", "tercia"]],
+      ["Si se escriben juntos, la decena…", "pierde la tilde", ["mantiene la tilde", "lleva dos tildes"]],
+      ["Si se escriben separados, la unidad y la decena…", "mantienen la tilde", ["pierden la tilde", "van sin espacio"]],
+      ["17.º escrito junto:", "decimoséptimo", ["décimoséptimo", "decimoseptimo", "décimoseptimo"]],
+      ["17.º escrito separado:", "décimo séptimo", ["decimo séptimo", "décimo septimo", "decimo septimo"]],
+      ["16.º escrito junto:", "decimosexto", ["décimosexto", "décimo sexto", "decimo sexto"]],
+      ["16.º escrito separado:", "décimo sexto", ["decimo sexto", "décimosexto", "decimosexto"]],
+      ["19.º escrito junto:", "decimonoveno", ["décimonoveno", "décimo noveno", "decimo noveno"]],
+      ["19.º escrito separado:", "décimo noveno", ["decimo noveno", "décimonoveno", "decimonoveno"]],
+    ],
+  },
   ...Object.entries(NS1).map(([k, [titulo, items]]) => ({
     id: "ns-u1-" + k,
     materia: "ns", periodo: "1st Term", seccion: "test",

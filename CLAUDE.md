@@ -16,6 +16,8 @@
   - `tipo: "vocab"` — слова: `items: [["вопрос", "ответ"], ...]`. Для тестов можно третьим элементом дать неверные варианты: `["вопрос", "ответ", ["неверн1", "неверн2", "неверн3"]]` (True/False — `...TF` / `...FT`).
   - `tipo: "mult"` — таблица умножения: `tablas` (какие таблицы), `por` (множители, сейчас ×2…×9 — без ×1 и ×10), `elegir: true` — галочки «¿Qué tablas?», любая комбинация (тема «Mezcla»). Когда отмечены все, первое касание оставляет только эту таблицу, дальше касания добавляют/убирают.
   - Новый предмет или триместр — в `MATERIAS`. У предмета можно задать свои `secciones` (у Matemáticas — `calc` «Cálculo») и `premio`: `"coches"` — только машины, `"mezcla"` — футболисты и машины по очереди (сейчас у Matemáticas), или список групп по очереди, напр. `["jugadores", "coches"]`. У Natural Science — `"mezcla"` (сквиши 18.10 убраны по просьбе Натальи: рисунки «не сквиши»).
+  - Ответ с вариантами через « / » (напр. «undécimo / decimoprimero») — в Escribir засчитывается любой; «15 cuadraditos»/«6 cm» — можно написать только число.
+  - Matemáticas, раздел `test`: Perímetro y área, Círculo y circunferencia, Los números ordinales (по тетради ребёнка).
   - Natural Science (Cambridge Natural Science 3): Unit 1 — объект `NS1` в temas.js (тесты по урокам + Review из всех), раздел `test` «Tests».
 - `jugadores.js` + `img/j/` — фото футболистов сборной Испании (Wikimedia Commons, CC BY-SA 4.0).
 - `coches.js` + `img/c/` — фото спорткаров, награда в Matemáticas вперемешку с футболистами (Wikimedia Commons).
