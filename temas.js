@@ -7,7 +7,7 @@ const MATERIAS = [
   { id: "va", nombre: "Llengua Valenciana", periodos: ["1a Avaluació"] },
   { id: "es", nombre: "Lengua",             periodos: ["1.er Trimestre"] },
   { id: "ma", nombre: "Matemáticas",        periodos: ["1.er Trimestre"], secciones: ["calc"], premio: "mezcla" },
-  { id: "ns", nombre: "Natural Science",    periodos: ["1st Term"], secciones: ["vocab", "test"], premio: ["jugadores", "coches", "squishies"] },
+  { id: "ns", nombre: "Natural Science",    periodos: ["1st Term"], secciones: ["vocab", "test"], premio: "mezcla" },
 ];
 
 // Secciones por defecto: vocab + gram. Una materia puede elegir otras con `secciones`.

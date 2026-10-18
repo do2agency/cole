@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261018a">
+<link rel="stylesheet" href="estilo.css?v=20261018b">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -68,7 +68,6 @@ h1 em{font-style:normal;color:var(--roja)}
 .goal .gol{font-family:var(--display);font-weight:900;font-size:3.4rem;line-height:1;color:#c60b1e}
 .goal img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;max-height:50vh}
 .goal.coches img{aspect-ratio:4/3;object-position:center}
-.goal.squishy img{aspect-ratio:1;object-fit:contain}
 .gallery img[src*="/c/"]{object-position:center}
 .goal .name{font-family:var(--display);font-weight:900;font-size:1.7rem;text-transform:uppercase;margin:10px 12px 0}
 .goal .ans{color:var(--muted);margin:2px 12px 12px}
@@ -123,10 +122,9 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261018a"></script>
-<script src="jugadores.js?v=20261018a"></script>
-<script src="coches.js?v=20261018a"></script>
-<script src="squishies.js?v=20261018a"></script>
+<script src="temas.js?v=20261018b"></script>
+<script src="jugadores.js?v=20261018b"></script>
+<script src="coches.js?v=20261018b"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -139,10 +137,10 @@ const TEMA = TEMAS.find(t => t.id === new URLSearchParams(location.search).get("
 if (!TEMA) location.replace("index.html");
 const MAT = MATERIAS.find(m => m.id === TEMA.materia);
 const SEC = SECCIONES.find(s => s.id === TEMA.seccion);
-// Premio por cada acierto: jugadores de la selección, coches deportivos, squishies o varios por turnos
-// (premio: "coches" | "mezcla" = jugadores y coches | lista, p. ej. ["jugadores", "coches", "squishies"])
+// Premio por cada acierto: jugadores de la selección, coches deportivos o varios por turnos
+// (premio: "coches" | "mezcla" = jugadores y coches | lista de grupos, p. ej. ["jugadores", "coches"])
 // Lamine Yamal no entra en los turnos: sale aparte cada 4 goles (ver ESTRELLA)
-const GRUPOS = { jugadores: JUGADORES.length > 1 ? JUGADORES.filter(p => p.n !== "Lamine Yamal") : JUGADORES, coches: typeof COCHES !== "undefined" ? COCHES : [], squishies: typeof SQUISHIES !== "undefined" ? SQUISHIES : [] };
+const GRUPOS = { jugadores: JUGADORES.length > 1 ? JUGADORES.filter(p => p.n !== "Lamine Yamal") : JUGADORES, coches: typeof COCHES !== "undefined" ? COCHES : [] };
 const TURNOS = (MAT.premio === "mezcla" ? ["jugadores", "coches"] : [].concat(MAT.premio || "jugadores"))
   .map(g => shuffle([...(GRUPOS[g] || [])])).filter(g => g.length);
 const PREMIOS = !TURNOS.length ? JUGADORES : TURNOS.length === 1 ? TURNOS[0]
@@ -258,7 +256,7 @@ function answer(raw, btn){
   if (ok){
     goals++; score();
     const pl = ESTRELLA && goals % 4 === 0 ? ESTRELLA : ROTA[pIdx++ % ROTA.length]; scorers.push(pl);
-    $("goal").classList.toggle("coches", pl.img.includes("/c/")); $("goal").classList.toggle("squishy", pl.img.includes("/s/")); $("gimg").src = pl.img; $("gimg").alt = pl.n; $("gname").textContent = pl.n;
+    $("goal").classList.toggle("coches", pl.img.includes("/c/")); $("gimg").src = pl.img; $("gimg").alt = pl.n; $("gname").textContent = pl.n;
     $("gans").textContent = `${cur.when ? cur.when + " · " : ""}${full}`;
     $("goal").hidden = false; $("gnext").focus();
   } else {
