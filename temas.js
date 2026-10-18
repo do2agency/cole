@@ -20,6 +20,7 @@ const SECCIONES = [
 
 // tipo "conj": tiempo + pronombre → forma del verbo
 // tipo "vocab": palabra → respuesta (items: [pregunta, respuesta]); en los tests, items: [pregunta, respuesta, [opciones falsas]]
+// tipo "reloj": un reloj con agujas → la hora en palabras (horas: [1…12], tipos: o'clock, quarter past, half past, quarter to)
 // tipo "mult": tablas de multiplicar (tablas: [2, 3…], por: multiplicadores; elegir: casillas para escoger las tablas)
 const POR = [2, 3, 4, 5, 6, 7, 8, 9];
 const TF = ["True", ["False"]], FT = ["False", ["True"]];
@@ -141,6 +142,60 @@ const NS1 = {
   ]],
 };
 const TEMAS = [
+  {
+    id: "en-voc-1-2",
+    materia: "en", periodo: "1st Term", seccion: "vocab",
+    titulo: "Vocabulary 1.2",
+    tipo: "vocab",
+    items: [
+      ["A … is a show that you can watch on television. It might be about animals, cooking, or adventures.", "programme", ["tip", "midday", "friendly"]],
+      ["… are small pieces of advice that can help you do something better.", "Tips", ["Programmes", "Friends", "Middays"]],
+      ["A … person is kind, nice, and enjoys talking or playing with other people.", "friendly", ["brilliant", "midday", "programme"]],
+      ["… is the middle of the day, when the time is 12 o'clock.", "Midday", ["Midnight", "Morning", "Evening"]],
+      ["My sister is very … . She always helps me when I have a problem.", "helpful", ["tips", "midday", "programme"]],
+      ["I have a dog and a cat. My dog, … is called Max, loves playing in the garden.", "who", ["where", "when", "what"]],
+      ["Fiona is … at gymnastics. She always wins every competition.", "brilliant", ["midday", "tips", "programme"]],
+      ["School starts at eight, so we must leave the house at a … past seven.", "quarter", ["half", "midday", "minute"]],
+      ["My favourite TV … is about cooking.", "programme", ["tip", "midday", "friendly"]],
+      ["We have lunch at … , when it is 12 o'clock.", "midday", ["programme", "tips", "helpful"]],
+      ["My teacher gave me some … to read faster.", "tips", ["programmes", "middays", "friendly"]],
+      ["The new boy is very … . He says hello to everyone.", "friendly", ["midday", "tips", "programme"]],
+    ],
+  },
+  {
+    id: "en-wh",
+    materia: "en", periodo: "1st Term", seccion: "gram",
+    titulo: "WH- question words",
+    tipo: "vocab",
+    items: [
+      ["… is your best friend? — My best friend is Leo.", "Who", ["Where", "When", "Why"]],
+      ["… is that animal? — It's a fox.", "What", ["Who", "When", "Why"]],
+      ["… is the park? — It's next to the school.", "Where", ["Who", "Why", "Which"]],
+      ["… is your birthday? — It's in May.", "When", ["Who", "Where", "Why"]],
+      ["… are you laughing? — Because the film is funny.", "Why", ["Who", "Where", "Which"]],
+      ["… cookie do you want? — The chocolate one.", "Which", ["Who", "Where", "When"]],
+      ["… do you ride a bike? — I push the pedals with my feet.", "How", ["Who", "Which", "What"]],
+      ["… is your new friend? — Her name is Ana.", "Who", ["Where", "When", "Why"]],
+      ["… is your favourite sport? — Football.", "What", ["Who", "Where", "When"]],
+      ["… do you live? — In a big flat near the beach.", "Where", ["Who", "Why", "Which"]],
+      ["… are we going on holiday? — In August.", "When", ["Who", "Which", "What"]],
+      ["… were you absent yesterday? — Because I was ill.", "Why", ["Who", "Where", "Which"]],
+      ["… long does it take to get to your house? — Ten minutes.", "How", ["Who", "Why", "Where"]],
+      ["We use WHO to ask about …", "people", ["places", "time", "reasons"]],
+      ["We use WHAT to ask about …", "things or actions", ["people", "places", "time"]],
+      ["We use WHERE to ask about …", "places", ["people", "time", "choices"]],
+      ["We use WHEN to ask about …", "time", ["places", "reasons", "people"]],
+      ["We use WHY to ask for …", "reasons", ["time", "places", "choices"]],
+      ["We use WHICH to ask about …", "choices", ["people", "reasons", "time"]],
+      ["We use HOW to ask about …", "manner or process", ["people", "places", "choices"]],
+    ],
+  },
+  {
+    id: "en-time",
+    materia: "en", periodo: "1st Term", seccion: "vocab",
+    titulo: "Telling the time",
+    tipo: "reloj", horas: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  },
   {
     id: "ma-perimetro-area",
     materia: "ma", periodo: "1.er Trimestre", seccion: "test",

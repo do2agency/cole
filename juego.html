@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261018c">
+<link rel="stylesheet" href="estilo.css?v=20261018d">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -44,6 +44,13 @@ h1 em{font-style:normal;color:var(--roja)}
 .tense{color:var(--roja)}
 .when{display:inline-block;background:var(--oro);color:var(--ink);font-family:var(--display);font-weight:900;font-size:1.3rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 10px;border-radius:6px;align-self:flex-start}
 .pron{font-family:var(--display);font-weight:900;font-size:clamp(2.4rem,11vw,3.4rem);line-height:1;margin:0;overflow-wrap:anywhere}
+.clock{display:block;width:min(240px,70vw);height:auto;align-self:center}
+.clock .face{fill:var(--bg);stroke:var(--fg);stroke-width:5}
+.clock .num{fill:var(--fg);font:800 17px var(--body);text-anchor:middle;dominant-baseline:central}
+.clock .tick{stroke:var(--muted);stroke-width:2}
+.clock .h{stroke:var(--fg);stroke-width:8;stroke-linecap:round}
+.clock .m{stroke:var(--roja);stroke-width:5;stroke-linecap:round}
+.clock .pin{fill:var(--fg)}
 .pron.long{font-family:var(--body);font-weight:800;font-size:clamp(1.25rem,5vw,1.5rem);line-height:1.3}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:420px){.opts{grid-template-columns:1fr}}
@@ -122,15 +129,15 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261018c"></script>
-<script src="jugadores.js?v=20261018c"></script>
-<script src="coches.js?v=20261018c"></script>
+<script src="temas.js?v=20261018d"></script>
+<script src="jugadores.js?v=20261018d"></script>
+<script src="coches.js?v=20261018d"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} };
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]] } return a };
-const norm = s => s.toLowerCase().replace(/[’']/g, "").replace(/\s+/g, " ").trim().replace(/[.!?]+$/, "").replace(/^the /, "");
+const norm = s => s.toLowerCase().replace(/[’']/g, "").replace(/\s+/g, " ").trim().replace(/[.!?]+$/, "").replace(/^the /, "").replace(/^(its|it is) /, "");
 const plain = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "");
 
 const TEMA = TEMAS.find(t => t.id === new URLSearchParams(location.search).get("t"));
@@ -167,6 +174,15 @@ function preguntas(){
       return { when: null, label: "Tabla del " + a, prompt: `${a} × ${b} = ?`, pre: "", answer: String(r), full: `${a} × ${b} = ${r}`, pool };
     }));
   }
+  if (TEMA.tipo === "reloj"){
+    return TEMA.horas.flatMap(h => [0, 15, 30, 45].map(m => {
+      const answer = horaEn(h, m), ant = (h + 10) % 12 + 1, sig = h % 12 + 1;
+      // Opciones falsas: la misma hora con otra posición del minutero y la hora de al lado
+      const pool = [...new Set([0, 15, 30, 45].map(x => horaEn(h, x)).concat(horaEn(sig, m), horaEn(ant, m)))].filter(x => x !== answer);
+      return { when: null, label: "What time is it?", fig: reloj(h, m), prompt: "What time is it?", pre: "", answer,
+        full: `${h}:${String(m).padStart(2, "0")} = ${answer}`, pool };
+    }));
+  }
   if (TEMA.tipo === "conj"){
     const ts = TEMA.tiempos.filter(t => filtro === "all" || t.id === filtro);
     return ts.flatMap(t => TEMA.pronombres.map((p, k) => {
@@ -177,6 +193,22 @@ function preguntas(){
   }
   const all = TEMA.items.map(i => i[1]);
   return TEMA.items.map(([q, a, falsas]) => ({ when: null, label: SEC.nombre, prompt: q, pre: "", answer: a, pool: falsas || all }));
+}
+
+// Reloj con agujas (SVG). Las agujas se colocan como en un reloj de verdad: la de las horas avanza con los minutos
+function reloj(h, m){
+  const p = (ang, r) => [100 + r * Math.sin(ang * Math.PI / 180), 100 - r * Math.cos(ang * Math.PI / 180)].map(x => x.toFixed(1));
+  const nums = Array.from({ length: 12 }, (_, i) => { const [x, y] = p((i + 1) * 30, 72); return `<text class="num" x="${x}" y="${y}">${i + 1}</text>`; }).join("");
+  const ticks = Array.from({ length: 60 }, (_, i) => { const [a, b] = p(i * 6, 90), [c, d] = p(i * 6, i % 5 ? 86 : 82); return `<line class="tick" x1="${a}" y1="${b}" x2="${c}" y2="${d}"/>`; }).join("");
+  const [hx, hy] = p((h % 12 + m / 60) * 30, 46), [mx, my] = p(m * 6, 62);
+  return `<svg class="clock" viewBox="0 0 200 200" role="img" aria-label="Reloj"><circle class="face" cx="100" cy="100" r="94"/>${ticks}${nums}
+    <line class="h" x1="100" y1="100" x2="${hx}" y2="${hy}"/><line class="m" x1="100" y1="100" x2="${mx}" y2="${my}"/><circle class="pin" cx="100" cy="100" r="6"/></svg>`;
+}
+const NUM_EN = ["twelve", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+// La hora en palabras: o'clock / quarter past / half past / quarter to (la siguiente hora)
+function horaEn(h, m){
+  const sig = h % 12 + 1;
+  return m === 0 ? NUM_EN[h] + " o'clock" : m === 15 ? "quarter past " + NUM_EN[h] : m === 30 ? "half past " + NUM_EN[h] : "quarter to " + NUM_EN[sig];
 }
 
 // Casillas de tablas (tema "Mezcla"): se puede marcar cualquier combinación, siempre al menos una.
@@ -230,7 +262,8 @@ function next(){
   $("card").innerHTML = `
     <div class="meta"><span class="tense">${cur.label}</span><span>${cur.again ? '<span class="tense">↻ Otra vez</span> · ' : ''}✔ ${goals} / ${total}</span></div>
     ${cur.when ? `<span class="when">${cur.when}</span>` : ""}
-    <p class="pron${cur.prompt.length > 24 ? " long" : ""}">${cur.prompt}</p>
+    ${cur.fig || ""}
+    <p class="pron${cur.prompt.length > 24 || cur.fig ? " long" : ""}">${cur.prompt}</p>
     ${ans === "write" ? writeUI : pickUI}
     <div id="fb"></div>`;
   if (ans === "write"){
