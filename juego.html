@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261018d">
+<link rel="stylesheet" href="estilo.css?v=20261019a">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -129,9 +129,9 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261018d"></script>
-<script src="jugadores.js?v=20261018d"></script>
-<script src="coches.js?v=20261018d"></script>
+<script src="temas.js?v=20261019a"></script>
+<script src="jugadores.js?v=20261019a"></script>
+<script src="coches.js?v=20261019a"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -160,7 +160,9 @@ $("crumb").textContent = `${MAT.nombre} · ${TEMA.periodo} · ${SEC.nombre}`;
 $("title").textContent = TEMA.titulo;
 
 let ans = "pick", filtro = "all", queue = [], total = 0, goals = 0, fails = 0, cur = null, scorers = [], pIdx = 0;
-let sel = new Set(TEMA.tablas || []);
+// Opciones para elegir: tablas (Mezcla de Matemáticas) o temas por número (Mezcla de Natural Science)
+const OPC = TEMA.tablas || (TEMA.grupos || []).map((_, i) => i);
+let sel = new Set(OPC);
 if (TEMA.elegir){ const s = (read("cole:tablas9:" + TEMA.id) || []).filter(n => sel.has(n)); if (s.length) sel = new Set(s); }
 
 // Preguntas: {when, label, prompt, answer, pool(opciones parecidas)}
@@ -191,6 +193,13 @@ function preguntas(){
       return { when: t.cuando, label: t.nombre, prompt: pr, pre: pr, answer: t.formas[k], pool };
     }));
   }
+  if (TEMA.grupos){
+    // Opciones falsas de cada pregunta: las suyas o las respuestas de su mismo tema
+    return TEMA.grupos.filter((_, i) => sel.has(i)).flatMap(([titulo, items]) => {
+      const all = items.map(i => i[1]);
+      return items.map(([q, a, falsas]) => ({ when: null, label: titulo, prompt: q, pre: "", answer: a, pool: falsas || all }));
+    });
+  }
   const all = TEMA.items.map(i => i[1]);
   return TEMA.items.map(([q, a, falsas]) => ({ when: null, label: SEC.nombre, prompt: q, pre: "", answer: a, pool: falsas || all }));
 }
@@ -211,24 +220,25 @@ function horaEn(h, m){
   return m === 0 ? NUM_EN[h] + " o'clock" : m === 15 ? "quarter past " + NUM_EN[h] : m === 30 ? "half past " + NUM_EN[h] : "quarter to " + NUM_EN[sig];
 }
 
-// Casillas de tablas (tema "Mezcla"): se puede marcar cualquier combinación, siempre al menos una.
+// Casillas de tablas o temas (temas "Mezcla"): se puede marcar cualquier combinación, siempre al menos una.
 // Si están todas marcadas, el primer toque elige solo esa tabla; los siguientes toques añaden o quitan.
 function tablasUI(){
-  const todas = sel.size === TEMA.tablas.length;
-  $("tiempos").innerHTML = `<h2 class="lbl" id="t-h">¿Qué tablas?</h2><div class="chips" role="group" aria-labelledby="t-h">
-    ${TEMA.tablas.map(n => `<label class="chip tick"><input type="checkbox" data-n="${n}"${sel.has(n) ? " checked" : ""}> Tabla del ${n}</label>`).join("")}
-    <button class="chip" id="todas" aria-pressed="${todas}">Todas</button></div>`;
+  const todas = sel.size === OPC.length;
+  const nombre = n => TEMA.tablas ? "Tabla del " + n : `${n + 1} · ${TEMA.grupos[n][0]}`;
+  $("tiempos").innerHTML = `<h2 class="lbl" id="t-h">${TEMA.tablas ? "¿Qué tablas?" : "¿Qué temas?"}</h2><div class="chips" role="group" aria-labelledby="t-h">
+    ${OPC.map(n => `<label class="chip tick"><input type="checkbox" data-n="${n}"${sel.has(n) ? " checked" : ""}> ${nombre(n)}</label>`).join("")}
+    <button class="chip" id="todas" aria-pressed="${todas}">${TEMA.tablas ? "Todas" : "Todos"}</button></div>`;
   document.querySelectorAll(".tick input").forEach(c => c.onchange = () => {
     const n = +c.dataset.n;
     if (todas) sel = new Set([n]);
     else if (c.checked) sel.add(n); else if (sel.size > 1) sel.delete(n); else { c.checked = true; return; }
     write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start();
   });
-  $("todas").onclick = () => { sel = new Set(TEMA.tablas); write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start(); };
+  $("todas").onclick = () => { sel = new Set(OPC); write("cole:tablas9:" + TEMA.id, [...sel]); tablasUI(); start(); };
 }
 
 function tiemposUI(){
-  if (TEMA.tipo === "mult" && TEMA.elegir) return tablasUI();
+  if (TEMA.elegir) return tablasUI();
   if (TEMA.tipo !== "conj" || TEMA.tiempos.length < 2) { $("tiempos").innerHTML = ""; return; }
   const b = (id, txt) => `<button class="chip" data-f="${id}" aria-pressed="${filtro === id}">${txt}</button>`;
   $("tiempos").innerHTML = `<h2 class="lbl" id="t-h">Tiempo</h2><div class="chips" role="group" aria-labelledby="t-h">
@@ -239,7 +249,7 @@ function tiemposUI(){
 function guardar(fin){
   const p = read("cole:" + TEMA.id) || {};
   p.empezado = true;
-  if (fin && filtro === "all" && sel.size === (TEMA.tablas || []).length){ p.hecho = true; p.mejorFallos = Math.min(p.mejorFallos ?? Infinity, fails); }
+  if (fin && filtro === "all" && sel.size === OPC.length){ p.hecho = true; p.mejorFallos = Math.min(p.mejorFallos ?? Infinity, fails); }
   write("cole:" + TEMA.id, p);
 }
 

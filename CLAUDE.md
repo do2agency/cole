@@ -20,7 +20,7 @@
   - `tipo: "reloj"` — часы со стрелками (SVG рисуется в juego.html), ответ — время словами по-английски (o'clock / quarter past / half past / quarter to); `horas: [1…12]`. Тема English «Telling the time».
   - English: «Vocabulary 1.2» и «WH- question words» — предложение с пропуском «…» + 4 варианта (формат, который просила Наталья). В WH-вопросах после «—» дан ответ, чтобы вариант был однозначным.
   - Matemáticas, раздел `test`: Perímetro y área, Círculo y circunferencia, Los números ordinales (по тетради ребёнка).
-  - Natural Science (Cambridge Natural Science 3): Unit 1 — объект `NS1` в temas.js (тесты по урокам + Review из всех), раздел `test` «Tests».
+  - Natural Science (Cambridge Natural Science 3): Unit 1 — объект `NS1` (тесты по урокам) и `NS1_WORDS` (слова) в temas.js, раздел `test` «Tests». «Mezcla: elige tus temas» (id ns-u1-review) — `tipo: "vocab"`, `elegir: true`, `grupos: [[название, items], …]`: галочки «¿Qué temas?» с номерами 1…9, любая комбинация (1–2, 2–3…) или «Todos» (просьба Натальи 19.10).
 - `jugadores.js` + `img/j/` — фото футболистов сборной Испании (Wikimedia Commons, CC BY-SA 4.0).
 - `coches.js` + `img/c/` — фото спорткаров, награда в Matemáticas вперемешку с футболистами (Wikimedia Commons).
 - `creditos.html` — авторы фото. Новое фото = новая строка с автором и лицензией.

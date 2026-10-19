@@ -39,6 +39,28 @@ const ORD = [
   ["80.º", "octogésimo"], ["90.º", "nonagésimo"], ["100.º", "centésimo"],
 ];
 
+// Natural Science · Unit 1: palabras del vocabulario
+const NS1_WORDS = [
+    ["the organ that controls everything we do", "brain"],
+    ["they take information to and from the brain", "nerves"],
+    ["the part of the brain that controls voluntary actions", "cerebrum"],
+    ["the part of the brain that controls coordination and balance", "cerebellum"],
+    ["the part of the brain that controls involuntary actions", "brain stem"],
+    ["hard and rigid; they form our skeleton", "bones"],
+    ["soft and elastic; they help us move", "muscles"],
+    ["where our bones connect to each other", "joints"],
+    ["all our bones together; it gives our body shape", "skeleton"],
+    ["it vibrates in the middle ear", "eardrum"],
+    ["the upside-down image forms here, at the back of the eye", "retina"],
+    ["they protect the eye from dust and sweat", "eyelashes"],
+    ["two holes in the nose where air enters", "nostrils"],
+    ["the nerve that detects smells", "olfactory nerve"],
+    ["tiny parts of the tongue that identify tastes", "taste buds"],
+    ["the organ of touch and the largest organ of the body", "skin"],
+    ["nerves below the skin that send information to the brain", "sensory nerves"],
+    ["a part of the body that does an important job in a body system", "organ"],
+];
+
 // Natural Science · Unit 1 (Cambridge Natural Science 3, pp. 8–17): preguntas de cada lección
 const NS1 = {
   vital: ["Vital functions", [
@@ -262,34 +284,17 @@ const TEMAS = [
   {
     id: "ns-u1-review",
     materia: "ns", periodo: "1st Term", seccion: "test",
-    titulo: "Unit 1 · Review: all the unit",
-    tipo: "vocab", items: Object.values(NS1).flatMap(([, items]) => items),
+    titulo: "Unit 1 · Mezcla: elige tus temas",
+    // grupos: cada tema es una casilla; se puede jugar todo o solo algunos (1–2, 2–3…)
+    tipo: "vocab", elegir: true, grupos: [...Object.values(NS1), ["Words", NS1_WORDS]],
+    items: [...Object.values(NS1), ["Words", NS1_WORDS]].flatMap(([, items]) => items),
   },
   {
     id: "ns-u1-words",
     materia: "ns", periodo: "1st Term", seccion: "vocab",
     titulo: "Unit 1 · The human body: words",
     tipo: "vocab",
-    items: [
-      ["the organ that controls everything we do", "brain"],
-      ["they take information to and from the brain", "nerves"],
-      ["the part of the brain that controls voluntary actions", "cerebrum"],
-      ["the part of the brain that controls coordination and balance", "cerebellum"],
-      ["the part of the brain that controls involuntary actions", "brain stem"],
-      ["hard and rigid; they form our skeleton", "bones"],
-      ["soft and elastic; they help us move", "muscles"],
-      ["where our bones connect to each other", "joints"],
-      ["all our bones together; it gives our body shape", "skeleton"],
-      ["it vibrates in the middle ear", "eardrum"],
-      ["the upside-down image forms here, at the back of the eye", "retina"],
-      ["they protect the eye from dust and sweat", "eyelashes"],
-      ["two holes in the nose where air enters", "nostrils"],
-      ["the nerve that detects smells", "olfactory nerve"],
-      ["tiny parts of the tongue that identify tastes", "taste buds"],
-      ["the organ of touch and the largest organ of the body", "skin"],
-      ["nerves below the skin that send information to the brain", "sensory nerves"],
-      ["a part of the body that does an important job in a body system", "organ"],
-    ],
+    items: NS1_WORDS,
   },
   ...[2, 3, 4, 5, 6, 7, 8, 9].map(n => ({
     id: "ma-tabla-" + n,

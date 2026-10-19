@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="Cole">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261018d">
+<link rel="stylesheet" href="estilo.css?v=20261019a">
 <style>
 /* Layout: Toddle-like outline on the left (subjects → terms), the chosen subject's plan on the right; on phones the outline becomes tabs */
 .app{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:16px 40px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;align-items:start}
@@ -74,7 +74,7 @@ main{min-width:0;display:flex;flex-direction:column;gap:20px}
   <p class="foot" style="grid-column:1/-1;margin:0"><a href="creditos.html">Créditos de las fotos</a></p>
 </div>
 
-<script src="temas.js?v=20261018d"></script>
+<script src="temas.js?v=20261019a"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -89,7 +89,7 @@ function estado(t){
 }
 function tamano(t){
   if (t.tipo === "mult") return t.elegir ? `Tablas del ${t.tablas[0]} al ${t.tablas.at(-1)} · tú eliges` : `${t.por.length} multiplicaciones · ×${t.por[0]} a ×${t.por.at(-1)}`;
-  return t.tipo === "conj" ? `${t.tiempos.length * t.pronombres.length} formas · ${t.tiempos.map(x => x.cuando).join(" / ")}` : `${t.items.length} palabras`;
+  return t.tipo === "conj" ? `${t.tiempos.length * t.pronombres.length} formas · ${t.tiempos.map(x => x.cuando).join(" / ")}` : `${t.items.length} palabras${t.elegir ? " · tú eliges los temas" : ""}`;
 }
 
 let actual = (location.hash.slice(1)) || read("cole:materia") || MATERIAS[0].id;
