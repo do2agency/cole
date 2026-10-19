@@ -21,6 +21,7 @@
   - English: «Vocabulary 1.2» и «WH- question words» — предложение с пропуском «…» + 4 варианта (формат, который просила Наталья). В WH-вопросах после «—» дан ответ, чтобы вариант был однозначным.
   - Matemáticas, раздел `test`: Perímetro y área, Círculo y circunferencia, Los números ordinales (по тетради ребёнка).
   - Natural Science (Cambridge Natural Science 3): Unit 1 — объект `NS1` (тесты по урокам) и `NS1_WORDS` (слова) в temas.js, раздел `test` «Tests». «Mezcla: elige tus temas» (id ns-u1-review) — `tipo: "vocab"`, `elegir: true`, `grupos: [[название, items], …]`: галочки «¿Qué temas?» с номерами 1…9, любая комбинация (1–2, 2–3…) или «Todos» (просьба Натальи 19.10).
+  - **Ayuda tras un fallo (Natural Science, вариант 2 Натальи 19.10):** под «¡Fuera de juego!» — «📖 Book, page N», фраза из учебника с ответом и простая схема. Данные: у урока `{ pag, fig }` третьим элементом в `NS1`, у слов — `NS1_WORDS_AYUDA` (по ответу). Фраза строится сама (заполняется «…»); свою можно дать 4-м элементом вопроса: строка или `{ exp, pag }`. Схемы — `figuras.js` (свои SVG, **фото учебника на сайт не выкладываем**: авторское право). Вопросы по опытам (Hands On) не делаем.
 - `jugadores.js` + `img/j/` — фото футболистов сборной Испании (Wikimedia Commons, CC BY-SA 4.0).
 - `coches.js` + `img/c/` — фото спорткаров, награда в Matemáticas вперемешку с футболистами (Wikimedia Commons).
 - `creditos.html` — авторы фото. Новое фото = новая строка с автором и лицензией.

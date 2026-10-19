@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="img/icono-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Nunito+Sans:wght@400;700;800&display=swap">
-<link rel="stylesheet" href="estilo.css?v=20261019b">
+<link rel="stylesheet" href="estilo.css?v=20261019c">
 <style>
 /* Layout: scoreboard on top, one question card below, goal celebration overlay */
 .wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:16px}
@@ -66,6 +66,31 @@ h1 em{font-style:normal;color:var(--roja)}
 .inp.bad{border-color:var(--roja)}
 .keys{display:flex;gap:6px;flex-wrap:wrap}
 .key{font:inherit;font-size:1.1rem;font-weight:700;width:44px;height:44px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.ayuda{margin-top:12px;padding:12px 14px;border:2px dashed var(--line);border-radius:12px;background:var(--bg)}
+.ayuda .pag{font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--navy)}
+.ayuda p{margin:6px 0 0;font-size:1.05rem;line-height:1.4}
+.fig{display:block;width:100%;max-width:380px;height:auto;margin:10px auto 0}
+.fig text{fill:var(--fg);font:600 12px var(--body)}
+.fig .h{font-weight:800;font-size:13px}
+.fig .s{font-size:11.5px}
+.fig .t{text-anchor:middle}
+.fig .n{fill:var(--on-accent);font-weight:800;font-size:11px}
+.fig .nm{fill:var(--roja)}
+.fig .ln{fill:none;stroke:var(--fg);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fig .fl,.fig .f2,.fig .f3{stroke:var(--fg);stroke-width:2.2}
+.fig .fl{fill:color-mix(in srgb,var(--oro) 38%,var(--bg))}
+.fig .f2{fill:color-mix(in srgb,var(--roja) 22%,var(--bg))}
+.fig .f3{fill:color-mix(in srgb,var(--navy) 22%,var(--bg))}
+.fig .ac{fill:none;stroke:var(--roja);stroke-width:2.6}
+.fig .ah{fill:var(--roja)}
+.fig .nv{fill:none;stroke:var(--navy);stroke-width:3.2;stroke-linecap:round}
+.fig .rayo{fill:none;stroke:var(--oro);stroke-width:2;stroke-dasharray:5 4}
+.fig .ret{fill:none;stroke:var(--roja);stroke-width:5}
+.fig .ojo{fill:var(--fg)}
+.fig .pelo{stroke:var(--fg);stroke-width:4;stroke-linecap:round}
+.fig .hueso{fill:none;stroke:var(--fg);stroke-width:18;stroke-linecap:round;stroke-linejoin:round}
+.fig .hueso2{fill:none;stroke:var(--bg);stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.fig .bud circle{fill:var(--bg);stroke:var(--fg);stroke-width:1.5}
 .miss{border-left:4px solid var(--roja);padding:8px 12px;background:color-mix(in srgb,var(--roja) 8%,var(--surface));border-radius:0 10px 10px 0;font-size:.95rem}
 .miss b{font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--roja)}
 .row{display:flex;gap:10px;flex-wrap:wrap}
@@ -129,9 +154,10 @@ h1 em{font-style:normal;color:var(--roja)}
   </div>
 </div>
 
-<script src="temas.js?v=20261019b"></script>
-<script src="jugadores.js?v=20261019b"></script>
-<script src="coches.js?v=20261019b"></script>
+<script src="temas.js?v=20261019c"></script>
+<script src="jugadores.js?v=20261019c"></script>
+<script src="coches.js?v=20261019c"></script>
+<script src="figuras.js?v=20261019c"></script>
 <script>
 const $ = id => document.getElementById(id);
 const read = k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } };
@@ -195,13 +221,30 @@ function preguntas(){
   }
   if (TEMA.grupos){
     // Opciones falsas de cada pregunta: las suyas o las respuestas de su mismo tema
-    return TEMA.grupos.filter((_, i) => sel.has(i)).flatMap(([titulo, items]) => {
+    return TEMA.grupos.filter((_, i) => sel.has(i)).flatMap(([titulo, items, meta]) => {
       const all = items.map(i => i[1]);
-      return items.map(([q, a, falsas]) => ({ when: null, label: titulo, prompt: q, pre: "", answer: a, pool: falsas || all }));
+      return items.map(it => ({ when: null, label: titulo, prompt: it[0], pre: "", answer: it[1], pool: it[2] || all, ayuda: ayudaDe(it, meta) }));
     });
   }
   const all = TEMA.items.map(i => i[1]);
-  return TEMA.items.map(([q, a, falsas]) => ({ when: null, label: SEC.nombre, prompt: q, pre: "", answer: a, pool: falsas || all }));
+  return TEMA.items.map(it => ({ when: null, label: SEC.nombre, prompt: it[0], pre: "", answer: it[1], pool: it[2] || all, ayuda: ayudaDe(it, TEMA.ayuda) }));
+}
+
+// Ayuda tras un fallo (Natural Science): página del libro, la frase con la respuesta y un esquema.
+// meta = { pag, fig } del tema (o por respuesta); la pregunta puede traer su explicación: "texto" o { exp, pag }.
+function ayudaDe([q, a, , x], meta){
+  if (!meta) return null;
+  const o = typeof x === "string" ? { exp: x } : x || {}, de = v => v && typeof v === "object" ? v[a] : v;
+  return { pag: o.pag ?? de(meta.pag), fig: de(meta.fig), exp: o.exp || explica(q, a) };
+}
+// La frase completa: se rellena el hueco «…»; «Nostril:» + respuesta; si no, «respuesta: definición»
+function explica(q, a){
+  const b = `<b>${a}</b>`, punto = t => /[.!?](<\/b>)?$/.test(t) ? t : t + ".";
+  if (q.startsWith("…")) return punto(q.replace(/^…/, b));
+  if (q.includes("…")) return punto(q.replace(/ ?…/, " " + b));
+  if (q.endsWith(":")) return punto(`${q} ${b}`);
+  if (a === "True") return `<b>True.</b> ${q}`;
+  return punto(`${b}: ${q}`);
 }
 
 // Reloj con agujas (SVG). Las agujas se colocan como en un reloj de verdad: la de las horas avanza con los minutos
@@ -308,7 +351,9 @@ function answer(raw, btn){
     fails++; score();
     const why = !btn && plain(v) === plain(norm(right)) ? "¡Casi! Revisa el acento." : "¡Fuera de juego!";
     cur.again = true; queue.push(cur);
+    const ay = cur.ayuda, fig = ay && typeof FIGURAS !== "undefined" ? FIGURAS[ay.fig] || "" : "";
     $("fb").innerHTML = `<div class="miss"><b>${why}</b> Correcto: ${full}. Esta pregunta volverá al final: ¡tendrás que acertarla!</div>
+      ${ay ? `<div class="ayuda">${ay.pag ? `<div class="pag">📖 Book, page ${ay.pag}</div>` : ""}<p>${ay.exp}</p>${fig}</div>` : ""}
       <div class="row" style="margin-top:12px"><button class="btn" id="cont">Siguiente</button></div>`;
     $("cont").onclick = next; $("cont").focus();
   }

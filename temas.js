@@ -61,10 +61,16 @@ const NS1_WORDS = [
     ["a part of the body that does an important job in a body system", "organ"],
 ];
 
+// Tras un fallo: página del libro y esquema (figuras.js) de cada palabra
+const NS1_WORDS_AYUDA = { pag: {}, fig: {} };
+[[8, "vital", "organ"], [9, "brain", "brain|nerves|cerebrum|cerebellum|brain stem"], [10, "bones", "bones|muscles|joints|skeleton"],
+ [11, "ear", "eardrum"], [12, "eye", "retina|eyelashes"], [14, "nose", "nostrils|olfactory nerve|taste buds"], [15, "skin", "skin|sensory nerves"]]
+  .forEach(([pag, fig, ws]) => ws.split("|").forEach(w => { NS1_WORDS_AYUDA.pag[w] = pag; NS1_WORDS_AYUDA.fig[w] = fig; }));
+
 // Natural Science · Unit 1 (Cambridge Natural Science 3, pp. 8–17): preguntas de cada lección
 const NS1 = {
   vital: ["Vital functions", [
-    ["How many vital functions are there?", "three", ["two", "four", "five"]],
+    ["How many vital functions are there?", "three", ["two", "four", "five"], "There are <b>three</b> vital functions: nutrition, interaction and reproduction."],
     ["All living things reproduce, interact and get energy and … from the environment.", "nutrients", ["organs", "bones", "nerves"]],
     ["Vital functions are … for life.", "necessary", ["dangerous", "bad", "boring"]],
     ["Human beings have groups of organs called …", "body systems", ["vital functions", "nerves", "joints"]],
@@ -78,19 +84,19 @@ const NS1 = {
     ["The locomotor system belongs to…", "interaction", ["nutrition", "reproduction"]],
     ["The nervous system belongs to…", "interaction", ["nutrition", "reproduction"]],
     ["The male and female reproductive systems belong to…", "reproduction", ["nutrition", "interaction"]],
-  ]],
+  ], { pag: 8, fig: "vital" }],
   brain: ["The brain", [
-    ["Which organ controls everything we do?", "the brain", ["the heart", "the skin", "the stomach"]],
+    ["Which organ controls everything we do?", "the brain", ["the heart", "the skin", "the stomach"], "<b>The brain</b> is the organ which controls everything we do."],
     ["The brain is the control centre of the … system.", "nervous", ["digestive", "respiratory", "locomotor"]],
     ["Our … organs send information to our brain.", "sense", ["digestive", "reproductive", "excretory"]],
     ["Information travels to our brain through the …", "nerves", ["bones", "muscles", "joints"]],
     ["The cerebrum controls…", "voluntary actions", ["involuntary actions", "coordination and balance"]],
     ["The cerebellum controls…", "coordination and balance", ["voluntary actions", "involuntary actions"]],
     ["The brain stem controls…", "involuntary actions", ["voluntary actions", "coordination and balance"]],
-    ["Which part controls voluntary actions?", "cerebrum", ["cerebellum", "brain stem"]],
-    ["Which part controls coordination and balance?", "cerebellum", ["cerebrum", "brain stem"]],
-    ["Which part controls involuntary actions?", "brain stem", ["cerebrum", "cerebellum"]],
-  ]],
+    ["Which part controls voluntary actions?", "cerebrum", ["cerebellum", "brain stem"], "The <b>cerebrum</b> controls voluntary actions."],
+    ["Which part controls coordination and balance?", "cerebellum", ["cerebrum", "brain stem"], "The <b>cerebellum</b> controls coordination and balance."],
+    ["Which part controls involuntary actions?", "brain stem", ["cerebrum", "cerebellum"], "The <b>brain stem</b> controls involuntary actions."],
+  ], { pag: 9, fig: "brain" }],
   bones: ["Bones and muscles", [
     ["The locomotor system allows us to …", "move", ["see", "hear", "smell"]],
     ["The three main parts of the locomotor system are bones, muscles and …", "joints", ["nerves", "skin", "organs"]],
@@ -98,25 +104,25 @@ const NS1 = {
     ["Our bones form our …, which gives our body shape.", "skeleton", ["skin", "brain", "heart"]],
     ["Joints are where our bones … to each other.", "connect", ["talk", "move away", "grow"]],
     ["Muscles are soft and …", "elastic", ["hard", "rigid", "rough"]],
-    ["How many bones do adults have?", "206", ["300", "106", "260"]],
-    ["About how many bones do babies have when they are born?", "300", ["206", "100", "50"]],
+    ["How many bones do adults have?", "206", ["300", "106", "260"], "Adults have <b>206</b> bones in their body."],
+    ["About how many bones do babies have when they are born?", "300", ["206", "100", "50"], "Babies have about <b>300</b> bones when they are born. Some of these bones later join together."],
     ["Muscles work by contracting and …", "expanding", ["breaking", "sleeping", "growing"]],
     ["Involuntary muscles, like the heart, work automatically.", ...TF],
     ["Voluntary muscles only work when our brain tells them to.", ...TF],
     ["Joints are places where our bones connect to each other.", ...TF],
-    ["The heart is a voluntary muscle.", ...FT],
+    ["The heart is a voluntary muscle.", ...FT, "<b>False.</b> The heart is an <b>involuntary</b> muscle: it works automatically."],
     ["Some bones join together as babies grow and become one.", ...TF],
-  ]],
+  ], { pag: 10, fig: "bones" }],
   hearing: ["Hearing", [
     ["Our sense of hearing allows us to distinguish between different …", "sounds", ["colours", "tastes", "smells"]],
     ["Step 1: sound waves enter the …", "outer ear", ["middle ear", "inner ear"]],
     ["Step 2: sound waves continue to the middle ear and make the … vibrate.", "eardrum", ["retina", "tongue", "nostril"]],
     ["Step 3: the vibrations make the liquid in the … move.", "inner ear", ["outer ear", "middle ear"]],
     ["Step 4: this movement sends information to the …", "brain", ["heart", "stomach", "skin"]],
-    ["Step 5: who reads the information and tells us what we are listening to?", "the brain", ["the eardrum", "the outer ear", "the muscles"]],
-    ["The eardrum is in the inner ear.", ...FT],
+    ["Step 5: who reads the information and tells us what we are listening to?", "the brain", ["the eardrum", "the outer ear", "the muscles"], "Step 5: <b>the brain</b> reads the information and tells us what we are listening to."],
+    ["The eardrum is in the inner ear.", ...FT, "<b>False.</b> The eardrum is in the <b>middle ear</b>."],
     ["Our senses allow us to interact with the world around us.", ...TF],
-  ]],
+  ], { pag: 11, fig: "ear" }],
   sight: ["Sight", [
     ["Our sense of sight allows us to perceive shapes, size, movement, distance and …", "colour", ["taste", "smell", "sound"]],
     ["Step 1 of seeing:", "Light reflects off an object.", ["The light enters the eye.", "An image is formed on the retina.", "Information is sent to the brain."]],
@@ -127,8 +133,8 @@ const NS1 = {
     ["The light forms an upside-down image on the …", "retina", ["eyebrow", "eyelid", "eardrum"]],
     ["The image that forms on the back of the eye is …", "upside-down", ["green", "very small", "round"]],
     ["Eyelashes protect the eye from dust and …", "sweat", ["light", "sound", "food"]],
-    ["What senses if something is too close to your eye and warns you?", "eyelashes", ["eyebrow", "pupil", "iris"]],
-  ]],
+    ["What senses if something is too close to your eye and warns you?", "eyelashes", ["eyebrow", "pupil", "iris"], "The <b>eyelashes</b> sense if something is too close to your eye and warn you."],
+  ], { pag: 12, fig: "eye" }],
   taste: ["Taste and smell", [
     ["Our senses of smell and taste are …", "connected", ["different organs", "voluntary", "the same"]],
     ["Air enters the nose through two holes called the …", "nostrils", ["taste buds", "eardrums", "pupils"]],
@@ -140,25 +146,25 @@ const NS1 = {
     ["Taste bud:", "detects tastes", ["detects smells", "where air enters the nose", "send information to the brain"]],
     ["Nostril:", "where air enters the nose", ["detects smells", "detects tastes", "send information to the brain"]],
     ["Nerves:", "send information to the brain", ["detects smells", "detects tastes", "where air enters the nose"]],
-  ]],
+  ], { pag: 14, fig: "nose" }],
   touch: ["Touch", [
     ["Our body is covered in …", "skin", ["hair", "bones", "muscles"]],
     ["Our skin is the organ of …", "touch", ["taste", "sight", "hearing"]],
-    ["What is the largest organ in the human body?", "the skin", ["the brain", "the heart", "the eye"]],
+    ["What is the largest organ in the human body?", "the skin", ["the brain", "the heart", "the eye"], "<b>The skin</b> is the largest organ in the human body."],
     ["… nerves below the skin send information to the brain.", "Sensory", ["Olfactory", "Taste", "Voluntary"]],
     ["Our skin tells us if something is rough, smooth, hard or …", "soft", ["sweet", "loud", "bright"]],
     ["Our skin can tell us if something is too …, so we don't get burnt.", "hot", ["sweet", "loud", "small"]],
     ["A tree feels …", "rough", ["soft", "smooth", "salty"]],
     ["A jumper feels …", "soft", ["rough", "hard", "bitter"]],
-  ]],
+  ], { pag: 15, fig: "skin" }],
   lang: ["Language skills: past tense", [
     ["The lemons … sour.", "tasted", ["taste", "tastes"]],
     ["The bark of a tree … rough.", "felt", ["feel", "feels"]],
     ["We … a beautiful dog.", "saw", ["see", "seed"]],
-    ["The pizzas … delicious.", "smelled", ["smell", "smells"]],
+    ["The pizzas … delicious.", "smelt", ["smeled", "smells"]],
     ["My singing … horrible!", "sounded", ["sound", "sounds"]],
-    ["Eye, skin, nose, hair: which is the odd one out?", "hair", ["eye", "skin", "nose"]],
-  ]],
+    ["Eye, skin, nose, hair: which is the odd one out?", "hair", ["eye", "skin", "nose"], { pag: 17, exp: "<b>Hair</b> is the odd one out: the eye, the skin and the nose are sense organs." }],
+  ], { pag: 16, fig: "past" }],
 };
 const TEMAS = [
   {
@@ -272,26 +278,26 @@ const TEMAS = [
       ["19.º escrito separado:", "décimo noveno", ["decimo noveno", "décimonoveno", "decimonoveno"]],
     ],
   },
-  ...Object.entries(NS1).map(([k, [titulo, items]]) => ({
+  ...Object.entries(NS1).map(([k, [titulo, items, ayuda]]) => ({
     id: "ns-u1-" + k,
     materia: "ns", periodo: "1st Term", seccion: "test",
     titulo: "Unit 1 · " + titulo,
-    tipo: "vocab", items,
+    tipo: "vocab", items, ayuda,
   })),
   {
     id: "ns-u1-review",
     materia: "ns", periodo: "1st Term", seccion: "test",
     titulo: "Unit 1 · Mezcla: elige tus temas",
     // grupos: cada tema es una casilla; se puede jugar todo o solo algunos (1–2, 2–3…)
-    tipo: "vocab", elegir: true, grupos: [...Object.values(NS1), ["Words", NS1_WORDS]],
-    items: [...Object.values(NS1), ["Words", NS1_WORDS]].flatMap(([, items]) => items),
+    tipo: "vocab", elegir: true, grupos: [...Object.values(NS1), ["Words", NS1_WORDS, NS1_WORDS_AYUDA]],
+    items: [...Object.values(NS1), ["Words", NS1_WORDS, NS1_WORDS_AYUDA]].flatMap(([, items]) => items),
   },
   {
     id: "ns-u1-words",
     materia: "ns", periodo: "1st Term", seccion: "vocab",
     titulo: "Unit 1 · The human body: words",
     tipo: "vocab",
-    items: NS1_WORDS,
+    items: NS1_WORDS, ayuda: NS1_WORDS_AYUDA,
   },
   ...[2, 3, 4, 5, 6, 7, 8, 9].map(n => ({
     id: "ma-tabla-" + n,
