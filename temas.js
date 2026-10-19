@@ -128,9 +128,6 @@ const NS1 = {
     ["The image that forms on the back of the eye is …", "upside-down", ["green", "very small", "round"]],
     ["Eyelashes protect the eye from dust and …", "sweat", ["light", "sound", "food"]],
     ["What senses if something is too close to your eye and warns you?", "eyelashes", ["eyebrow", "pupil", "iris"]],
-    ["In the pinhole camera, the small hole works like the …", "pupil", ["retina", "eyebrow", "brain"]],
-    ["In the pinhole camera, the wax paper works like the …", "retina", ["pupil", "eyelid", "iris"]],
-    ["The pinhole camera formed an … image.", "upside-down", ["green", "invisible", "square"]],
   ]],
   taste: ["Taste and smell", [
     ["Our senses of smell and taste are …", "connected", ["different organs", "voluntary", "the same"]],
